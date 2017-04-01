@@ -1,0 +1,36 @@
+<script src="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.js"></script>
+<link rel="stylesheet" href="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.css" type="text/css"/>
+
+<script src="{$wa_url}wa-apps/shop/plugins/crmretail/js/plugin.js?{$v}"></script>
+<link rel="stylesheet" href="{$wa_url}wa-apps/shop/plugins/crmretail/css/plugin.css?{$v}">
+<h1>
+    Настройка плагина
+    <a href="mailto:waapru@gmail.com" title="waapru@gmail.com"><i class="icon16 status-green"></i>Поддержка</a>
+</h1>
+
+<div id="desc-block">
+    <p>Описание</p>
+</div>
+
+<form action="?module=plugins&id=retailcrm&action=save" method="post" id="plugins-settings-form">
+    {$wa->csrf()}
+    <div class="field-group">
+        <h2>Системные настройки</h2>
+        {$settings.system}
+        <h2>Настройки соединения</h2>
+        {$settings.connection}
+    </div>
+
+    <hr>
+    <input type="submit" class="button green" value="Сохранить" id="plugin-submit-btn" data-plugin-id="crmretail">
+		<span id="plugins-settings-form-status" style="display:none">
+			<i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+		</span>
+</form>
+
+<script type="text/javascript">
+    $(function(){
+        //var wa_url = '{$wa_url}';
+        $.shop.crmretailPlugin.init('{$wa_url}');
+    })
+</script>
