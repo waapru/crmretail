@@ -9,7 +9,7 @@ class shopCrmretailPluginObjectOrderProduct implements ArrayAccess
         'createdAt' => '',          //	DateTime	Дата создания товара в системе
         'quantity' => 0.0,       	//  float		Количество
         'comment' => '',	        //  string		Комментарий к товару в заказе
-        'properties' => [],         //  [массив]    Дополнительные свойства товара в заказе
+        'properties' => array(),         //  [массив]    Дополнительные свойства товара в заказе
         'purchasePrice' => 0.0,	    //  double		Закупочная цена
         'offer' => null,            //	object (SerializedOrderProductOffer)		Торговое предложение
         'productName' => '',        //	string		Название товара
@@ -76,8 +76,8 @@ class shopCrmretailPluginObjectOrderProduct implements ArrayAccess
         $this->data[$offset] = '';
     }
 
-    public function get()
+    public function toArray()
     {
-        return $this->data;
+        return array_filter($this->data);
     }
 }

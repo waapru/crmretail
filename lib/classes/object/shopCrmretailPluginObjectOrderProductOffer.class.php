@@ -1,7 +1,7 @@
 <?php
 
 
-class shopCrmretailPluginOrderProductOffer implements ArrayAccess
+class shopCrmretailPluginObjectOrderProductOffer implements ArrayAccess
 {
     protected $data = array(
         'id' => 0,           //	integer		ID торгового предложения

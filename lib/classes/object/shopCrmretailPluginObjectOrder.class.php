@@ -15,7 +15,7 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
         'firstName' => '',	    //  string		Имя
         'patronymic' => '',	    //  string		Отчество
         'phone' => '',	        //  string		Телефон
-        'additionalPhone',	    //  string		Дополнительный телефон
+        'additionalPhone'=> '', //  string		Дополнительный телефон
         'email' => '',	        //  string		E-mail
         'call' => false,	    //  boolean		Требуется позвонить
         'expired' => false,	    //  boolean		Просрочен
@@ -26,7 +26,7 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
         'statusComment' => '',	//  string		Комментарий к последнему изменению статуса
         'shipmentDate' => '',	//  DateTime	Дата отгрузки
         'shipped' => false,	    //  boolean		Заказ отгружен
-        'customFields' => [],	//  array		Ассоциативный массив пользовательских полей
+        'customFields' => array(),	//  array		Ассоциативный массив пользовательских полей
         'orderType' => '',      //	string		Тип заказа
         'orderMethod' => '',	//  string		Способ оформления
         'customer' => null,	    //  object (SerializedOrderCustomer)		Клиент
@@ -34,7 +34,7 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
         'paymentType' => '',	//  string		Тип оплаты
         'paymentStatus' => '',	//  string		Статус оплаты
         'status' => '',	        //  string		Статус заказа
-        'items' => [],	        //  array of objects (SerializedOrderProduct)		Товар в заказе
+        'items' => null,	    //  array of objects (SerializedOrderProduct)		Товар в заказе
         'delivery' => null,     //	object (SerializedOrderDelivery)		Данные о доставке
         'source' => null,       //	object (SerializedSource)		Источник заказа
         'shipmentStore' => '',  //	string		Склад отгрузки
@@ -72,6 +72,7 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
                     break;
                 case 'markDatetime' :
                 case 'shipmentDate' :
+                case 'createdAt' :
                     $value = ( $w = strtotime($value) ) ? date('Y-m-d H:i:s',$w) : '';
                     break;
                 case 'call' :
@@ -105,7 +106,7 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
 
     public function __toString()
     {
-        return json_encode($this->data);
+        return json_encode(array_filter($this->data));
     }
 }
 
