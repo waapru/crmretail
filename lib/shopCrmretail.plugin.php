@@ -22,7 +22,8 @@ class shopCrmretailPlugin extends shopPlugin
 
         $customer = new shopCustomer($order['contact_id']);
 
-        $orderObject['orderType'] = $customer['contragentType'] == 'individual' ? 'eshop-individual' : 'eshop-legal';
+        if ( isset($customer['contragentType']) )
+            $orderObject['orderType'] = $customer['contragentType'] == 'individual' ? 'eshop-individual' : 'eshop-legal';
 
         $orderObject['customerId'] = $order['contact_id'];
         $orderObject['lastName'] = $customer['lastname'];
@@ -40,6 +41,24 @@ class shopCrmretailPlugin extends shopPlugin
 
         $orderObject['customerComment'] = $order['comment'];
 
+        foreach ( $order['items'] as $v )
+        {
+            $item = $v['item'];
+            $itemObject = new shopCrmretailPluginObjectOrderProduct;
+            $itemObject['initialPrice'] = $item['price'];
+            $itemObject['purchasePrice'] = $item['purchase_price'];
+            $itemObject['quantity'] = $item['quantity'];
+            $itemObject['productName'] = $item['name'];
+            $orderObject['items'][] = $itemObject->toArray();
+        }
 
+
+
+        $plugin_id = 'crmretail';
+        $plugin = wa()->getPlugin($plugin_id);
+        $s = $plugin->getSettings();
+
+        $client = new shopCrmretailPluginApiClient($s['url'],$s['key']);
+        $response = $client->ordersCreate($orderObject,$s['shopcode']);
     }
 }

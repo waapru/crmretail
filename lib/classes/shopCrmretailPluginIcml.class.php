@@ -7,6 +7,8 @@ class shopCrmretailPluginIcml
     protected $categories;
     protected $offers;
     protected $category;
+    protected $routing;
+    protected $url_type = 1;
 
     protected $products;
     protected $skus;
@@ -15,6 +17,15 @@ class shopCrmretailPluginIcml
     public function generate()
     {
         $this->settings = wa('shop')->getPlugin('crmretail')->getSettings();
+        $this->routing = wa()->getRouting();
+
+        $domain_routes = $this->routing->getByApp('shop');
+        foreach ( $domain_routes as $domain => $routes )
+            foreach ( $routes as $r ) {
+                $this->url_type = $r['url_type'];
+                break(2);
+            }
+
         $now = date('Y-m-d H:i:s');
         $s = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -58,7 +69,9 @@ XML;
             $e->setAttribute('id',$v['id']);
 
             ( $v['parent_id'] != 0 ) && $e->setAttribute('parentId', $v['parent_id']);
-            $this->category[$v['id']] = $v['full_url'];
+
+            $this->category[$v['id']] = ($this->url_type == 1) ? $v['url'] : $v['full_url'];
+            //$this->category[$v['id']] = $v['full_url'];
         }
     }
 
@@ -131,24 +144,29 @@ XML;
             $image = array(
                 'product_id' => $v['product_id'],
                 'id'         => ( !empty($v['image_id']) && $v['image_id'] != 0) ? $v['image_id'] : $product['image_id'],
+                'filename'   => ( !empty($v['image_filename']) && $v['image_filename'] != '') ? $v['image_filename'] : $product['image_filename'],
                 'ext'        => $product['ext']
             );
 
-            if ( !empty($image['image_id']) && !empty($image['product_id']) )
-                $e->appendChild($this->dom->createElement('picture', $this->getUrl($image)));
+            if ( !empty($image['id']) && !empty($image['product_id']) ){
+                $image_url = shopImage::getUrl($image,null,true);
+                $e->appendChild($this->dom->createElement('picture',$image_url));
+            }
 
-            $url = $this->settings['siteurl'];
-            /*if (isset($this->settings["routing"]["catalog"]) && !empty($this->settings["routing"]["catalog"])) {
-                $url .= $this->settings["routing"]["catalog"] . "/";
-            }*/
-            if ( isset($this->category[$category]) )
-                $url .= $this->category[ $category ] . "/";
 
-            $url .= $product['url'];
-            $e->appendChild($this->dom->createElement('url', $url));
+            if ( isset($this->category[$category]) ){
+                $url = $this->routing->getUrl('/frontend/product', array(
+                    'product_url' => $product['url'],
+                    'category_url' => $this->category[$category],
+                ), true);
+                $e->appendChild($this->dom->createElement('url', $url));
+            }
+
+            if ( $v['sku'] )
+                $e->appendChild($this->dom->createElement('article', $v['sku']));
 
             $s = $this->settings;
-            foreach ( array('article','size','color','weight','vendor') as $f )
+            foreach ( array('size','color','weight','vendor') as $f )
                 if ( isset($s[$f]) )
                 if ( $sf = $this->check($s[$f]) ) {
                     if ( $value = $this->check($v['fields'][$sf]) ) {
@@ -170,4 +188,5 @@ XML;
     {
         return empty($value) ? false : $value;
     }
+
 }

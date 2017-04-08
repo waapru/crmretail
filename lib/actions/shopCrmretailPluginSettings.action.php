@@ -4,10 +4,10 @@ class shopCrmretailPluginSettingsAction extends waViewAction
 {
     public function execute()
     {
-        //$this->test();
+        //$a = wa('shop')->getConfig()->getImageSizes('system');
+
         $icml = new shopCrmretailPluginIcml;
         $icml->generate();
-        //echo wa('shop')->getDataPath('plugins/crmretail/',true);
 
         $plugin_id = 'crmretail';
         $plugin = wa()->getPlugin($plugin_id);
