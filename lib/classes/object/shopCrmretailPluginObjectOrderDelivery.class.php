@@ -5,12 +5,12 @@ class shopCrmretailPluginObjectOrderDelivery implements ArrayAccess
     protected $data = array(
         'code' => '',       //	string		Код типа доставки
         'data' => [],       //	array		Данные для интеграционных типов доставки
-        'service' => null,  //	object (SerializedDeliveryService)		Служба доставки
+        'service' => false,  //	object (SerializedDeliveryService)		Служба доставки
         'cost'  => 0.0,     //	double		Стоимость доставки
         'netCost' => 0.0,   //	double		Себестоимость доставки
         'date' => '',       //	DateTime		Дата доставки
-        'time' => null,     //	object (DeliveryTime)		Информация о времени доставки
-        'address' => null,  //	object (OrderDeliveryAddress)		Адрес доставки
+        'time' => false,     //	object (DeliveryTime)		Информация о времени доставки
+        'address' => false,  //	object (OrderDeliveryAddress)		Адрес доставки
     );
 
     public function offsetExists($offset)
@@ -64,6 +64,12 @@ class shopCrmretailPluginObjectOrderDelivery implements ArrayAccess
     public function __toString()
     {
         return json_encode($this->data);
+    }
+
+
+    public function toArray()
+    {
+        return array_filter($this->data);
     }
 }
 

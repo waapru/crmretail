@@ -22,21 +22,21 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
         'customerComment' => '',//	string		Комментарий клиента
         'managerComment' => '',	//  string		Комментарий оператора
         'paymentDetail' => '',	//  string		Детали платежа
-        'contragent' => null,   //  object (OrderContragent)		Реквизиты
+        'contragent' => false,   //  object (OrderContragent)		Реквизиты
         'statusComment' => '',	//  string		Комментарий к последнему изменению статуса
         'shipmentDate' => '',	//  DateTime	Дата отгрузки
         'shipped' => false,	    //  boolean		Заказ отгружен
         'customFields' => array(),	//  array		Ассоциативный массив пользовательских полей
         'orderType' => '',      //	string		Тип заказа
         'orderMethod' => '',	//  string		Способ оформления
-        'customer' => null,	    //  object (SerializedOrderCustomer)		Клиент
+        'customer' => false,	    //  object (SerializedOrderCustomer)		Клиент
         'managerId' => 0,	    //  integer		Менеджер, прикрепленный к заказу
         'paymentType' => '',	//  string		Тип оплаты
         'paymentStatus' => '',	//  string		Статус оплаты
         'status' => '',	        //  string		Статус заказа
-        'items' => null,	    //  array of objects (SerializedOrderProduct)		Товар в заказе
-        'delivery' => null,     //	object (SerializedOrderDelivery)		Данные о доставке
-        'source' => null,       //	object (SerializedSource)		Источник заказа
+        'items' => false,	    //  array of objects (SerializedOrderProduct)		Товар в заказе
+        'delivery' => false,     //	object (SerializedOrderDelivery)		Данные о доставке
+        'source' => false,       //	object (SerializedSource)		Источник заказа
         'shipmentStore' => '',  //	string		Склад отгрузки
     );
    
@@ -69,6 +69,9 @@ class shopCrmretailPluginObjectOrder implements ArrayAccess
                     break;
                 case 'customer' :
                     $value = ( $value instanceof shopCrmretailPluginObjectOrderCustomer ) ? $value->get() : null;
+                    break;
+                case 'delivery' :
+                    $value = ( $value instanceof shopCrmretailPluginObjectOrderDelivery ) ? $value->toArray() : null;
                     break;
                 case 'markDatetime' :
                 case 'shipmentDate' :

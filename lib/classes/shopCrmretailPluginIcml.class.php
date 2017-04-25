@@ -99,6 +99,8 @@ XML;
             $product_id = $v['product_id'];
             if ( empty($fields) )
                 $fields = $fm->getValues($fm->getByProduct($product_id));
+            if ( !isset($fields[$v['feature_id']]) )
+                continue;
             $field = $fields[$v['feature_id']];
             ( !isset($this->product_fields[$product_id]) ) && $this->product_fields[$product_id] = array();
             $this->product_fields[$product_id][$field['code']] = $field['values'][$v['feature_value_id']];
@@ -117,7 +119,7 @@ XML;
 
             $e->setAttribute('id',$v['id']);
             $e->setAttribute('productId',$v['product_id']);
-            $e->setAttribute('quantity',empty($val['count']) ? 0 : $v['count']);
+            $e->setAttribute('quantity',empty($v['count']) ? 0 : $v['count']);
             $e->setAttribute('available',$v['available'] ? 'true' : 'false');
 
             $product = $this->products[$v['product_id']];
@@ -135,7 +137,7 @@ XML;
             $e->appendChild($this->dom->createElement('productName'))->appendChild($this->dom->createTextNode(htmlspecialchars($product_name)));
 
             $e->appendChild($this->dom->createElement('price', $v['primary_price']));
-            ($val['purchase_price'] > 0) && $e->appendChild($this->dom->createElement('purchasePrice', $v['purchase_price']));
+            ($v['purchase_price'] > 0) && $e->appendChild($this->dom->createElement('purchasePrice', $v['purchase_price']));
 
             if ( isset($this->settings['xmlId']) && !empty($this->settings['xmlId']) )
                 if ( isset($v['fields'][$this->settings['xmlId']]) && !empty($v['fields'][$this->settings['xmlId']]) )
